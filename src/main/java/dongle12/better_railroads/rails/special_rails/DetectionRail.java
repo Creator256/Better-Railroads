@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockRailDetector;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
@@ -41,17 +42,16 @@ public class DetectionRail extends BlockRailDetector {
         itemBlock.setRegistryName(new ResourceLocation(BetterRailroads.MODID, "detection_rail"));
         itemBlock.setUnlocalizedName(BetterRailroads.MODID + "." + "detection_rail");
         setCreativeTab(BetterRailroads.miscRailsTab);
-		try{
-			Field blockMat = ReflectionHelper.findField(Block.class, "blockMaterial", "field_149764_J");
-			blockMat.setAccessible(true);
-			ReflectionHelper.setPrivateValue(Block.class, this, Material.WOOD, 18);
-		}
-		catch(Exception e){
-			System.out.println("ERROR");
-		}
-		
+		setHardness(0.7f);
+        setSoundType(SoundType.WOOD);
 	}
 	
+    @Override
+    public Material getMaterial(IBlockState state)
+    {
+        return Material.WOOD;
+    }
+
 	//Registers the model
     @SideOnly(Side.CLIENT)
     public void initModel() {

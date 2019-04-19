@@ -9,6 +9,7 @@ import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockRailPowered;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -31,16 +32,17 @@ public class PoweredRail extends BlockRailPowered {
         itemBlock.setRegistryName(new ResourceLocation(BetterRailroads.MODID, name));
         itemBlock.setUnlocalizedName(BetterRailroads.MODID + "." + name);
         setCreativeTab(BetterRailroads.miscRailsTab);
-		try{
-			Field blockMat = ReflectionHelper.findField(Block.class, "blockMaterial", "field_149764_J");
-			blockMat.setAccessible(true);
-			ReflectionHelper.setPrivateValue(Block.class, this, Material.WOOD, 18);
-		}
-		catch(Exception e){
-			System.out.println("ERROR");
-		}
+		setHardness(0.7f);
+        setSoundType(SoundType.WOOD);
 	}
 	
+    @Override
+    public Material getMaterial(IBlockState state)
+    {
+        return Material.WOOD;
+    }
+    
+    
 	private static final AxisAlignedBB FLAT_BOUNDING = new AxisAlignedBB(0f, 0f, 0f, 1.0f, .45f, 1.0f);
     private static final AxisAlignedBB ASCENDING_BOUNDING = new AxisAlignedBB(0f, 0f, 0f, 1.0f, .85f, 1.0f);
     private static final AxisAlignedBB COLLISION_BOX = new AxisAlignedBB(0f, 0f, 0f, 1.0f, -0.15f, 1.0f);

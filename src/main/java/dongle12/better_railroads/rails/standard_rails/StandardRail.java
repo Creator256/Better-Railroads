@@ -5,11 +5,13 @@ import java.lang.reflect.Field;
 import dongle12.better_railroads.BetterRailroads;
 import dongle12.better_railroads.util.RailUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRail;
 import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockRailBase.EnumRailDirection;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemBlock;
@@ -21,13 +23,13 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-public class StandardRail extends BlockRailBase{
+public class StandardRail extends BlockRail {
 
 	public static final PropertyEnum<BlockRailBase.EnumRailDirection> SHAPE = PropertyEnum.create("shape", BlockRailBase.EnumRailDirection.class);
 	final ItemBlock itemBlock;
 
 	protected StandardRail(boolean isPowered, String name) {
-		super(false);
+		super();
         setDefaultState(this.blockState.getBaseState().withProperty(getShapeProperty(), BlockRailBase.EnumRailDirection.NORTH_SOUTH));
         setUnlocalizedName(BetterRailroads.MODID + "." + name);
         setRegistryName(new ResourceLocation(BetterRailroads.MODID, name));
@@ -35,19 +37,20 @@ public class StandardRail extends BlockRailBase{
         itemBlock.setRegistryName(new ResourceLocation(BetterRailroads.MODID, name));
         itemBlock.setUnlocalizedName(BetterRailroads.MODID + "." + name);
         setCreativeTab(BetterRailroads.miscRailsTab);
-		try{
-			Field blockMat = ReflectionHelper.findField(Block.class, "blockMaterial", "field_149764_J");
-			blockMat.setAccessible(true);
-			ReflectionHelper.setPrivateValue(Block.class, this, Material.WOOD, 18);
-		}
-		catch(Exception e){
-			System.out.println("ERROR");
-		}
+		setHardness(0.7f);
+        setSoundType(SoundType.WOOD);
 	}
 
     private static final AxisAlignedBB FLAT_BOUNDING = new AxisAlignedBB(0f, 0f, 0f, 1.0f, .45f, 1.0f);
     private static final AxisAlignedBB ASCENDING_BOUNDING = new AxisAlignedBB(0f, 0f, 0f, 1.0f, .85f, 1.0f);
     private static final AxisAlignedBB COLLISION_BOX = new AxisAlignedBB(0f, 0f, 0f, 1.0f, -0.15f, 1.0f);
+
+    @Override
+    public Material getMaterial(IBlockState state)
+    {
+        return Material.WOOD;
+    }
+
     
 	@Override
 	public boolean canPlaceBlockAt(World world, BlockPos pos){
@@ -131,33 +134,6 @@ public class StandardRail extends BlockRailBase{
 	}
 	
 	
-    ////////////////////////////////////////////////////////
-    //items below are needed to extend from BlockRailBase//
-    ////////////////////////////////////////////////////////
     
-	@Override
-	public IProperty<EnumRailDirection> getShapeProperty() {
-		return SHAPE;
-	}
-   
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, getShapeProperty());
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(getShapeProperty()).getMetadata();
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return this.getDefaultState().withProperty(getShapeProperty(), BlockRailBase.EnumRailDirection.byMetadata(meta));
-    }
     
-    @Override
-    protected void updateState(IBlockState p_189541_1_, World p_189541_2_, BlockPos p_189541_3_, Block p_189541_4_) {
-
-    }
-
 }
